@@ -3,24 +3,26 @@ import crossIcon from "../assets/icon-cross.svg";
 import boardsSlice from "../redux/boardsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { createBoard } from "../helper/board";
+import { createBoard, editBoards } from "../helper/board";
 
-function AddEditBoardModal({ setIsBoardModalOpen, type }) {
+function AddEditBoardModal({ type, setIsBoardModalOpen, board, boardIndex }) {
   const dispatch = useDispatch();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [name, setName] = useState("");
-  const [newColumns, setNewColumns] = useState([
-    { name: "Todo", tasks: [], id: uuidv4() },
-    { name: "Doing", tasks: [], id: uuidv4() },
-  ]);
+  const [newColumns, setNewColumns] = useState([]);
   const [isValid, setIsValid] = useState(true);
-  const board = useSelector((state) => state.boards).find(
-    (board) => board.isActive
-  );
+  // const board = useSelector((state) => state.boards).find(
+  //   (board) => board.isActive
+  // );
+  // console.log("board in setIsBoardModalOpen", setIsBoardModalOpen);
 
-  if (type === "edit" && isFirstLoad) {
+  // console.log("board in Modal", board);
+  // console.log("board in Modal ab", ab);
+  console.log(" boardIndex", boardIndex);
+
+  if (type === "edit" && isFirstLoad && board) {
     setNewColumns(
-      board.columns.map((col) => {
+      board?.columns?.map((col, index) => {
         return { ...col, id: uuidv4() };
       })
     );
@@ -41,12 +43,14 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
     setIsValid(true);
     return true;
   };
-
-  const onChange = (id, newValue) => {
+  console.log("name", name);
+  const onChange = (id, newValue, index) => {
+    console.log("index", index);
     setNewColumns((prevState) => {
       const newState = [...prevState];
       const column = newState.find((col) => col.id === id);
       column.name = newValue;
+      column["columnIndex"] = index;
       return newState;
     });
   };
@@ -54,7 +58,7 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
   const onDelete = (id) => {
     setNewColumns((prevState) => prevState.filter((el) => el.id !== id));
   };
-
+  console.log("newColumns", newColumns);
   const onSubmit = (type) => {
     setIsBoardModalOpen(false);
     if (type === "add") {
@@ -67,7 +71,14 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
           console.log("err", err);
         });
     } else {
-      dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
+      editBoards(name, newColumns, board.id)
+        .then((res) => {
+          console.log("res", res);
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+      // dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
     }
   };
 
@@ -114,7 +125,7 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
               <input
                 className=" bg-transparent flex-grow px-4 py-2 rounded-md text-sm  border-[0.5px] border-gray-600 focus:outline-[#635fc7] outline-[1px]  "
                 onChange={(e) => {
-                  onChange(column.id, e.target.value);
+                  onChange(column.id, e.target.value, index);
                 }}
                 type="text"
                 value={column.name}
@@ -153,6 +164,7 @@ function AddEditBoardModal({ setIsBoardModalOpen, type }) {
         </div>
       </div>
     </div>
+    // <>dsfdsf</>
   );
 }
 

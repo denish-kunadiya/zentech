@@ -10,9 +10,10 @@ import { getBoards } from "../helper/board";
 function Home({ boards, boardIndex }) {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
   const [columns, setColumns] = useState([]);
+  const [editData, setEditData] = useState();
 
   // const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
+  // const board = boards.find((board) => board.isActive === true);
   // const columns = boards[boardIndex].columns;
 
   useEffect(() => {
@@ -20,6 +21,8 @@ function Home({ boards, boardIndex }) {
   }, [boardIndex]);
 
   console.log("columns", columns);
+  console.log("boards :::::::::::::::::::;", boards);
+  console.log("boards :::::::::::::::::::;boardIndex", boardIndex);
 
   return (
     <AfterAuth>
@@ -51,6 +54,8 @@ function Home({ boards, boardIndex }) {
             <AddEditBoardModal
               type="edit"
               setIsBoardModalOpen={setIsBoardModalOpen}
+              board="boards"
+              ab={boards}
             />
           )}
         </>

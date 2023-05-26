@@ -8,6 +8,9 @@ import {
   getDocs,
   query,
   where,
+  updateDoc,
+  doc,
+  writeBatch,
 } from "firebase/firestore";
 
 export const createBoard = async (name, newColumns) => {
@@ -61,15 +64,62 @@ export const getBoards = () => {
   console.log("userId", userId);
 
   const q = query(collectionRef, where("userId", "==", userId));
-
-  // const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //     // doc.data() is never undefined for query doc snapshots
-  //     console.log(doc.id, " => ", doc.data());
-  //   });
-
   return new Promise((resolve, reject) => {
     getDocs(q)
+      .then((res) => {
+        console.log("res", res);
+
+        resolve(res);
+      })
+      .catch((err) => {
+        console.log("err", err);
+
+        reject(err);
+      });
+  });
+};
+
+export const editBoards = async (name, columnUpdates, id) => {
+  const db = getFirestore();
+  // const collectionRef = collection(db, "boards");
+
+  // const userId = store.getState()?.loginReducer?.user?.user?.uid;
+  console.log("columnUpdates", columnUpdates);
+  const boardId = id; // Replace with your actual board ID
+  const boardRef = doc(db, "boards", boardId);
+
+  // const updates = {};
+  const boardSnapshot = await getDoc(boardRef);
+  console.log("boardSnapshot", boardSnapshot);
+  const currentColumns = boardSnapshot.data().columns;
+
+  const updatedColumns = currentColumns.map((column, index) => {
+    const update = columnUpdates.find((update) => update.columnIndex === index);
+    if (update) {
+      return { ...column, name: update.name };
+    }
+    return column;
+  });
+  console.log("updatedColumns", updatedColumns);
+
+  updateDoc(boardRef, {
+    columns: updatedColumns,
+  });
+
+  console.log("Column names updated successfully.");
+
+  // columnUpdates.forEach((update) => {
+  //   const { columnIndex, name } = update;
+  //   console.log("update", update);
+  //   // console.log("newColumnName", newColumnName);
+  //   console.log("name", name);
+  //   updates[`columns.${columnIndex}.name`] = name;
+  // });
+
+  return new Promise((resolve, reject) => {
+    updateDoc(boardRef, {
+      name,
+    })
       .then((res) => {
         console.log("res", res);
 

@@ -12,7 +12,13 @@ import DeleteModal from "../modals/DeleteModal";
 import boardsSlice from "../redux/boardsSlice";
 import { auth } from "../firebase";
 
-function Header({ setIsBoardModalOpen, isBoardModalOpen, user }) {
+function Header({
+  setIsBoardModalOpen,
+  isBoardModalOpen,
+  user,
+  boards,
+  boardIndex,
+}) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [boardType, setBoardType] = useState("add");
@@ -21,8 +27,8 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen, user }) {
 
   const dispatch = useDispatch();
 
-  const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive);
+  // const boards = useSelector((state) => state.boards);
+  // const board = boards.find((board) => board.isActive);
 
   const onDropdownClick = () => {
     setOpenDropdown((state) => !state);
@@ -51,8 +57,8 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen, user }) {
 
   const users = auth.currentUser;
   const userId = user.uid;
-  console.log("users", users);
-  console.log("userId", userId);
+  // console.log("users", users);
+  // console.log("userId", userId);
 
   return (
     <div className=" p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0 ">
@@ -65,7 +71,7 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen, user }) {
           </h3>
           <div className=" flex items-center ">
             <h3 className=" truncate max-w-[200px] md:text-2xl text-xl font-bold md:ml-20 font-sans  ">
-              {board?.name}
+              {boards[boardIndex]?.name}
             </h3>
             <img
               src={openDropdown ? iconUp : iconDown}
@@ -137,13 +143,15 @@ function Header({ setIsBoardModalOpen, isBoardModalOpen, user }) {
           setBoardType={setBoardType}
           type={boardType}
           setIsBoardModalOpen={setIsBoardModalOpen}
+          board={boards[boardIndex]}
+          boardIndex={boardIndex}
         />
       )}
       {isDeleteModalOpen && (
         <DeleteModal
           setIsDeleteModalOpen={setIsDeleteModalOpen}
           type="board"
-          title={board.name}
+          title={boards[boardIndex].name}
           onDeleteBtnClick={onDeleteBtnClick}
         />
       )}
@@ -155,6 +163,8 @@ const mapStateToProp = (state) => {
   console.log("state plan screen ::", state);
   return {
     user: state?.loginReducer?.user,
+    boards: state?.boardReducer?.boards,
+    boardIndex: state?.boardReducer?.index,
   };
 };
 
