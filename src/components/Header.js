@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../assets/logo-mobile.svg";
 import iconDown from "../assets/icon-chevron-down.svg";
 import iconUp from "../assets/icon-chevron-up.svg";
@@ -11,6 +11,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import DeleteModal from "../modals/DeleteModal";
 import boardsSlice from "../redux/boardsSlice";
 import { auth } from "../firebase";
+import { deleteBoard } from "../helper/board";
+import * as boardActions from "../redux/boards/action";
 
 function Header({
   setIsBoardModalOpen,
@@ -18,17 +20,20 @@ function Header({
   user,
   boards,
   boardIndex,
+  setBoardDispatch,
 }) {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [boardType, setBoardType] = useState("add");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    setBoardDispatch();
+  }, [refresh]);
 
   const dispatch = useDispatch();
-
-  // const boards = useSelector((state) => state.boards);
-  // const board = boards.find((board) => board.isActive);
 
   const onDropdownClick = () => {
     setOpenDropdown((state) => !state);
@@ -47,9 +52,19 @@ function Header({
 
   const onDeleteBtnClick = (e) => {
     if (e.target.textContent === "Delete") {
-      dispatch(boardsSlice.actions.deleteBoard());
-      dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
-      setIsDeleteModalOpen(false);
+      let id = boards[boardIndex].id;
+      deleteBoard(id)
+        .then((res) => {
+          console.log("res", res);
+          setRefresh(refresh + 1);
+          setIsDeleteModalOpen(false);
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+
+      // dispatch(boardsSlice.actions.deleteBoard());
+      // dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
     } else {
       setIsDeleteModalOpen(false);
     }
@@ -145,6 +160,8 @@ function Header({
           setIsBoardModalOpen={setIsBoardModalOpen}
           board={boards[boardIndex]}
           boardIndex={boardIndex}
+          setRefresh={setRefresh}
+          refresh={refresh}
         />
       )}
       {isDeleteModalOpen && (
@@ -153,6 +170,8 @@ function Header({
           type="board"
           title={boards[boardIndex].name}
           onDeleteBtnClick={onDeleteBtnClick}
+          setRefresh={setRefresh}
+          refresh={refresh}
         />
       )}
     </div>
@@ -168,4 +187,10 @@ const mapStateToProp = (state) => {
   };
 };
 
-export default connect(mapStateToProp)(Header);
+const mapDispatchToProp = (dispatch) => {
+  return {
+    setBoardDispatch: () => dispatch(boardActions.setBoardsAction()),
+  };
+};
+
+export default connect(mapStateToProp, mapDispatchToProp)(Header);

@@ -1,4 +1,9 @@
-import { BOARD_GET_SUCCESSFULL, SET_BOARD_ACTIVE } from "./type";
+import {
+  BOARD_GET_SUCCESSFULL,
+  SET_BOARD_ACTIVE,
+  STOP_BOARD_PROCESSING,
+  BOARD_PROCESSING,
+} from "./type";
 
 const defaultReducer = {
   processing: false,
@@ -18,22 +23,22 @@ const boardReducer = (state = defaultReducer, action) => {
     case SET_BOARD_ACTIVE:
       return {
         ...state,
+        processing: false,
         index: action.payload,
       };
 
-    // case STOP_LOGIN_PROCESSING:
-    //   return {
-    //     ...state,
-    //     processing: false,
-    //     isLoggedIn: false,
-    //   };
+    case BOARD_PROCESSING:
+      return {
+        ...state,
+        processing: true,
+      };
 
-    // case LOGOUT_SUCCESSFUL: {
-    //   return {
-    //     ...state,
-    //     ...defaultReducer,
-    //   };
-    // }
+    case STOP_BOARD_PROCESSING: {
+      return {
+        ...state,
+        processing: false,
+      };
+    }
 
     default:
       return state;

@@ -5,20 +5,18 @@ import AddEditBoardModal from "../modals/AddEditBoardModal";
 import Column from "./Column";
 import EmptyBoard from "./EmptyBoard";
 import Sidebar from "./Sidebar";
-import { getBoards } from "../helper/board";
-
-function Home({ boards, boardIndex }) {
+import * as boardActions from "../redux/boards/action";
+function Home({ boards, boardIndex, setBoardDispatch }) {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
   const [columns, setColumns] = useState([]);
-  const [editData, setEditData] = useState();
-
-  // const boards = useSelector((state) => state.boards);
-  // const board = boards.find((board) => board.isActive === true);
-  // const columns = boards[boardIndex].columns;
+  const [refresh, setRefresh] = useState(0);
 
   useEffect(() => {
-    setColumns(boards[boardIndex].columns);
-  }, [boardIndex]);
+    setBoardDispatch();
+  }, [refresh]);
+  useEffect(() => {
+    setColumns(boards[boardIndex]?.columns);
+  }, [boardIndex, boards]);
 
   console.log("columns", columns);
   console.log("boards :::::::::::::::::::;", boards);
@@ -29,7 +27,7 @@ function Home({ boards, boardIndex }) {
       {/* Columns Section */}
       {boards?.length > 0 ? (
         <>
-          {columns.length > 0 ? (
+          {columns?.length > 0 ? (
             <>
               {columns.map((col, index) => (
                 <Column key={index} colIndex={index} col={col} />
@@ -54,8 +52,9 @@ function Home({ boards, boardIndex }) {
             <AddEditBoardModal
               type="edit"
               setIsBoardModalOpen={setIsBoardModalOpen}
-              board="boards"
-              ab={boards}
+              board={boards}
+              setRefresh={setRefresh}
+              refresh={refresh}
             />
           )}
         </>
@@ -68,6 +67,12 @@ function Home({ boards, boardIndex }) {
   );
 }
 
+const mapDispatchToProp = (dispatch) => {
+  return {
+    setBoardDispatch: () => dispatch(boardActions.setBoardsAction()),
+  };
+};
+
 const mapStateToProp = (state) => {
   console.log("state", state);
   return {
@@ -76,4 +81,4 @@ const mapStateToProp = (state) => {
   };
 };
 
-export default connect(mapStateToProp)(Home);
+export default connect(mapStateToProp, mapDispatchToProp)(Home);

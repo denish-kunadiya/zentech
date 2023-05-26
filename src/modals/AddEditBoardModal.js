@@ -2,23 +2,25 @@ import React, { useState } from "react";
 import crossIcon from "../assets/icon-cross.svg";
 import boardsSlice from "../redux/boardsSlice";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { createBoard, editBoards } from "../helper/board";
 
-function AddEditBoardModal({ type, setIsBoardModalOpen, board, boardIndex }) {
+function AddEditBoardModal({
+  type,
+  setIsBoardModalOpen,
+  board,
+  boardIndex,
+  setRefresh,
+  refresh,
+  processing,
+}) {
   const dispatch = useDispatch();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [name, setName] = useState("");
   const [newColumns, setNewColumns] = useState([]);
   const [isValid, setIsValid] = useState(true);
-  // const board = useSelector((state) => state.boards).find(
-  //   (board) => board.isActive
-  // );
-  // console.log("board in setIsBoardModalOpen", setIsBoardModalOpen);
 
-  // console.log("board in Modal", board);
-  // console.log("board in Modal ab", ab);
-  console.log(" boardIndex", boardIndex);
+  console.log("processing", processing === true);
 
   if (type === "edit" && isFirstLoad && board) {
     setNewColumns(
@@ -43,9 +45,9 @@ function AddEditBoardModal({ type, setIsBoardModalOpen, board, boardIndex }) {
     setIsValid(true);
     return true;
   };
-  console.log("name", name);
+  // console.log("name", name);
   const onChange = (id, newValue, index) => {
-    console.log("index", index);
+    // console.log("index", index);
     setNewColumns((prevState) => {
       const newState = [...prevState];
       const column = newState.find((col) => col.id === id);
@@ -58,25 +60,31 @@ function AddEditBoardModal({ type, setIsBoardModalOpen, board, boardIndex }) {
   const onDelete = (id) => {
     setNewColumns((prevState) => prevState.filter((el) => el.id !== id));
   };
-  console.log("newColumns", newColumns);
+  // console.log("newColumns", newColumns);
   const onSubmit = (type) => {
-    setIsBoardModalOpen(false);
+    console.log("type", type);
     if (type === "add") {
       // dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
       createBoard(name, newColumns)
         .then((res) => {
           console.log("res", res);
+          setIsBoardModalOpen(false);
+          setRefresh(refresh + 1);
         })
         .catch((err) => {
           console.log("err", err);
+          setIsBoardModalOpen(false);
         });
     } else {
       editBoards(name, newColumns, board.id)
         .then((res) => {
-          console.log("res", res);
+          // console.log("res", res);
+          setRefresh(refresh + 1);
+          setIsBoardModalOpen(false);
         })
         .catch((err) => {
           console.log("err", err);
+          setIsBoardModalOpen(false);
         });
       // dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
     }
@@ -168,4 +176,11 @@ function AddEditBoardModal({ type, setIsBoardModalOpen, board, boardIndex }) {
   );
 }
 
-export default AddEditBoardModal;
+const mapStateToProp = (state) => {
+  console.log("state plan screen ::", state);
+  return {
+    processing: state?.boardReducer?.processing,
+  };
+};
+
+export default connect(mapStateToProp)(AddEditBoardModal);

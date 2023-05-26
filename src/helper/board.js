@@ -11,6 +11,7 @@ import {
   updateDoc,
   doc,
   writeBatch,
+  deleteDoc,
 } from "firebase/firestore";
 
 export const createBoard = async (name, newColumns) => {
@@ -81,7 +82,7 @@ export const getBoards = () => {
 
 export const editBoards = async (name, columnUpdates, id) => {
   const db = getFirestore();
-  // const collectionRef = collection(db, "boards");
+  const collectionRef = collection(db, "boards");
 
   // const userId = store.getState()?.loginReducer?.user?.user?.uid;
   console.log("columnUpdates", columnUpdates);
@@ -89,22 +90,25 @@ export const editBoards = async (name, columnUpdates, id) => {
   const boardRef = doc(db, "boards", boardId);
 
   // const updates = {};
-  const boardSnapshot = await getDoc(boardRef);
-  console.log("boardSnapshot", boardSnapshot);
-  const currentColumns = boardSnapshot.data().columns;
+  // const boardSnapshot = await getDoc(boardRef);
+  // console.log("boardSnapshot", boardSnapshot);
+  // const currentColumns = boardSnapshot.data().columns;
 
-  const updatedColumns = currentColumns.map((column, index) => {
-    const update = columnUpdates.find((update) => update.columnIndex === index);
-    if (update) {
-      return { ...column, name: update.name };
-    }
-    return column;
-  });
-  console.log("updatedColumns", updatedColumns);
+  // const updatedColumns = currentColumns.map((column, index) => {
+  //   const update = columnUpdates.find((update) => update.columnIndex === index);
+  //   if (update) {
+  //     return { ...column, name: update.name };
+  //   }
+  //   return column;
+  // });
+  // console.log("updatedColumns", updatedColumns);
 
   updateDoc(boardRef, {
-    columns: updatedColumns,
+    name,
+    columns: columnUpdates,
   });
+
+  // boardRef.update({ name, columns: columnUpdates });
 
   console.log("Column names updated successfully.");
 
@@ -116,12 +120,36 @@ export const editBoards = async (name, columnUpdates, id) => {
   //   updates[`columns.${columnIndex}.name`] = name;
   // });
 
+  // return new Promise((resolve, reject) => {
+  //   updateDoc(boardRef, {
+  //     name,
+  //   })
+  //     .then((res) => {
+  //       console.log("res", res);
+
+  //       resolve(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log("err", err);
+
+  //       reject(err);
+  //     });
+  // });
+};
+
+export const deleteBoard = async (id) => {
+  // const userId = store.getState()?.loginReducer?.user?.user?.uid;
+
+  // console.log("userId", userId);
+  const boardId = id; // Replace with your actual board ID
+
+  const db = getFirestore();
+  const collectionRef = collection(db, "boards");
+
   return new Promise((resolve, reject) => {
-    updateDoc(boardRef, {
-      name,
-    })
+    deleteDoc(doc(db, "boards", boardId))
       .then((res) => {
-        console.log("res", res);
+        console.log("res deleteDoc", res);
 
         resolve(res);
       })
