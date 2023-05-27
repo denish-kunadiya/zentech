@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import crossIcon from "../assets/icon-cross.svg";
 import boardsSlice from "../redux/boardsSlice";
 import { addTask, editTask } from "../helper/task";
+import { toast } from "react-toastify";
 
 function AddEditTaskModal({
   type,
@@ -116,9 +117,12 @@ function AddEditTaskModal({
         .then((res) => {
           console.log("res add task", res);
           setRefresh(refresh + 1);
+          setIsAddTaskModalOpen(false);
+          toast.success(res);
         })
         .catch((err) => {
           console.log("err", err);
+          toast.success("Error in creating task.");
         });
     } else {
       const taskObject = {
@@ -130,11 +134,13 @@ function AddEditTaskModal({
       editTask(board.id, taskIndex, prevColIndex, taskObject)
         .then((res) => {
           console.log("res", res);
-          // setRefresh(refresh + 1);
           setRefresh(refresh + 1);
+          setIsAddTaskModalOpen(false);
+          toast.success("Task updated successfully.");
         })
         .catch((err) => {
           console.log("err", err);
+          toast.success("Error in updating task.");
         });
     }
   };
@@ -255,7 +261,7 @@ function AddEditTaskModal({
               const isValid = validate();
               if (isValid) {
                 onSubmit(type);
-                setIsAddTaskModalOpen(false);
+
                 type === "edit" && setIsTaskModalOpen(false);
               }
             }}

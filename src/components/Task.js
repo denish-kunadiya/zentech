@@ -26,6 +26,7 @@ function Task({
   });
 
   const handleOnDrag = (e) => {
+    console.log("e.dataTransfer", e.dataTransfer);
     e.dataTransfer.setData(
       "text",
       JSON.stringify({ taskIndex, prevColIndex: colIndex })

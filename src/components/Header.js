@@ -13,6 +13,7 @@ import boardsSlice from "../redux/boardsSlice";
 import { auth } from "../firebase";
 import { deleteBoard } from "../helper/board";
 import * as boardActions from "../redux/boards/action";
+import { toast } from "react-toastify";
 
 function Header({
   setIsBoardModalOpen,
@@ -58,6 +59,7 @@ function Header({
           console.log("res", res);
           setRefresh(refresh + 1);
           setIsDeleteModalOpen(false);
+          toast.success("Board successfully deleted.");
         })
         .catch((err) => {
           console.log("err", err);

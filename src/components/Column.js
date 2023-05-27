@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
 import Task from "./Task";
+import { editTask } from "../helper/task";
 
-function Column({ colIndex, boards, col, setRefresh, refresh }) {
+function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
   const colors = [
     "bg-red-500",
     "bg-orange-500",
@@ -20,8 +21,8 @@ function Column({ colIndex, boards, col, setRefresh, refresh }) {
   const dispatch = useDispatch();
   const [color, setColor] = useState(null);
   // const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
-  // const col = board.columns.find((col, i) => i === colIndex);
+  // const board = boards.find((board) => board.isActive === true);
+  // const col = boards[boardIndex].columns.find((col, i) => i === colIndex);
   console.log("col", col);
 
   console.log("boards", boards);
@@ -33,11 +34,37 @@ function Column({ colIndex, boards, col, setRefresh, refresh }) {
     const { prevColIndex, taskIndex } = JSON.parse(
       e.dataTransfer.getData("text")
     );
-
+    console.log("prevColIndex", prevColIndex);
+    console.log("taskIndex", taskIndex);
     if (colIndex !== prevColIndex) {
-      dispatch(
-        boardsSlice.actions.dragTask({ colIndex, prevColIndex, taskIndex })
+      let ab = boards[boardIndex].columns.find((col, i) => i === colIndex);
+      const prevCol = boards[boardIndex].columns.find(
+        (col, i) => i === prevColIndex
       );
+      const task = prevCol.tasks.splice(taskIndex, 1);
+      task[0].status = ab.name;
+      ab.tasks.push(...task);
+      // .tasks.push(task);
+      console.log("ab :?", ab);
+      console.log("prevCol :?", prevCol);
+      console.log("task :?", task);
+
+      // dispatch();
+      const taskObject = {
+        title: task[0].title,
+        description: task[0].description,
+        status: task[0].status,
+        subtasks: task[0].subtasks,
+      };
+      editTask(boards[boardIndex].id, taskIndex, prevColIndex, taskObject)
+        .then((res) => {
+          console.log("res", res);
+          setRefresh(refresh + 1);
+          // setIsAddTaskModalOpen(false);
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
     }
   };
 
@@ -73,6 +100,7 @@ const mapStateToProp = (state) => {
   // console.log("state", state);
   return {
     boards: state?.boardReducer?.boards,
+    boardIndex: state?.boardReducer?.index,
   };
 };
 

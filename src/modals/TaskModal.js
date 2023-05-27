@@ -8,6 +8,7 @@ import AddEditTaskModal from "./AddEditTaskModal";
 import DeleteModal from "./DeleteModal";
 import { deleteBoard } from "../helper/board";
 import { deleteTask } from "../helper/task";
+import { toast } from "react-toastify";
 
 function TaskModal({
   taskIndex,
@@ -71,6 +72,7 @@ function TaskModal({
           setRefresh(refresh + 1);
           setIsTaskModalOpen(false);
           setIsDeleteModalOpen(false);
+          toast.success("Task successfully deleted");
         })
         .catch((err) => {
           console.log("err", err);

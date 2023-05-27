@@ -4,6 +4,7 @@ import boardsSlice from "../redux/boardsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { createBoard, editBoards } from "../helper/board";
+import { toast } from "react-toastify";
 
 function AddEditBoardModal({
   type,
@@ -70,10 +71,12 @@ function AddEditBoardModal({
           console.log("res", res);
           setIsBoardModalOpen(false);
           setRefresh(refresh + 1);
+          toast.success("Board created successfully.");
         })
         .catch((err) => {
           console.log("err", err);
           setIsBoardModalOpen(false);
+          toast.error("Error in creating board.");
         });
     } else {
       editBoards(name, newColumns, board.id)
@@ -81,10 +84,12 @@ function AddEditBoardModal({
           // console.log("res", res);
           setRefresh(refresh + 1);
           setIsBoardModalOpen(false);
+          toast.success("Board updated successfully.");
         })
         .catch((err) => {
           console.log("err", err);
           setIsBoardModalOpen(false);
+          toast.error("Error in updating board.");
         });
       // dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
     }
