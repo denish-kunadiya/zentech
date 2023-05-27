@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { connect, useSelector } from "react-redux";
 import TaskModal from "../modals/TaskModal";
 
-function Task({ colIndex, taskIndex, boards, boardIndex }) {
+function Task({
+  colIndex,
+  taskIndex,
+  boards,
+  boardIndex,
+  setRefresh,
+  refresh,
+}) {
   // const boards = useSelector((state) => state.boards);
   // const board = boards.find((board) => board.isActive === true);
   const columns = boards[boardIndex]?.columns;
@@ -45,6 +52,8 @@ function Task({ colIndex, taskIndex, boards, boardIndex }) {
           colIndex={colIndex}
           taskIndex={taskIndex}
           setIsTaskModalOpen={setIsTaskModalOpen}
+          setRefresh={setRefresh}
+          refresh={refresh}
         />
       )}
     </div>

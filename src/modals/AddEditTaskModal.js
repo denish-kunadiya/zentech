@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import crossIcon from "../assets/icon-cross.svg";
 import boardsSlice from "../redux/boardsSlice";
-import { addTask } from "../helper/task";
+import { addTask, editTask } from "../helper/task";
 
 function AddEditTaskModal({
   type,
@@ -11,7 +11,7 @@ function AddEditTaskModal({
   setIsTaskModalOpen,
   setIsAddTaskModalOpen,
   taskIndex,
-  prevColIndex = 0,
+  prevColIndex,
   board,
   boardIndex,
   setRefresh,
@@ -22,14 +22,13 @@ function AddEditTaskModal({
   const [isValid, setIsValid] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  // const board = useSelector((state) => state.boards).find(
-  //   (board) => board.isActive
-  // );
 
   const columns = board.columns;
   const col = columns.find((col, index) => index === prevColIndex);
   const task = col ? col.tasks.find((task, index) => index === taskIndex) : [];
-  const [status, setStatus] = useState(columns[prevColIndex].name);
+  const [status, setStatus] = useState(
+    prevColIndex ? columns[prevColIndex]?.name : columns[0]?.name
+  );
   const [newColIndex, setNewColIndex] = useState(prevColIndex);
   const [subtasks, setSubtasks] = useState([
     { title: "", isCompleted: false, id: uuidv4() },
@@ -44,7 +43,7 @@ function AddEditTaskModal({
       return newState;
     });
   };
-  console.log("board task", board);
+  console.log("board task prevColIndex", prevColIndex);
 
   const onChangeStatus = (e) => {
     setStatus(e.target.value);
@@ -77,9 +76,24 @@ function AddEditTaskModal({
   }
 
   const onDelete = (id) => {
-    setSubtasks((prevState) => prevState.filter((el) => el.id !== id));
+    // setSubtasks((prevState) => prevState.filter((el) => el.id !== id));
+    console.log("subtask id", id);
+    // const taskObject = {
+    //   title,
+    //   description,
+    //   status,
+    //   subtasks,
+    // };
+    // addTask(board.id, status, taskObject)
+    //   .then((res) => {
+    //     console.log("res add task", res);
+    //     setRefresh(refresh + 1);
+    //   })
+    //   .catch((err) => {
+    //     console.log("err", err);
+    //   });
   };
-
+  console.log("status", status);
   const onSubmit = (type) => {
     if (type === "add") {
       // dispatch(
@@ -98,19 +112,30 @@ function AddEditTaskModal({
         status,
         subtasks,
       };
-      addTask(board.id, board.name, status, taskObject);
-    } else {
-      dispatch(
-        boardsSlice.actions.editTask({
-          title,
-          description,
-          subtasks,
-          status,
-          taskIndex,
-          prevColIndex,
-          newColIndex,
+      addTask(board.id, status, taskObject)
+        .then((res) => {
+          console.log("res add task", res);
+          setRefresh(refresh + 1);
         })
-      );
+        .catch((err) => {
+          console.log("err", err);
+        });
+    } else {
+      const taskObject = {
+        title,
+        description,
+        status,
+        subtasks,
+      };
+      editTask(board.id, taskIndex, prevColIndex, taskObject)
+        .then((res) => {
+          console.log("res", res);
+          // setRefresh(refresh + 1);
+          setRefresh(refresh + 1);
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
     }
   };
 
@@ -188,13 +213,13 @@ function AddEditTaskModal({
                 className=" bg-transparent outline-none focus:border-0 flex-grow px-4 py-2 rounded-md text-sm  border-[0.5px] border-gray-600 focus:outline-[#635fc7] outline-[1px]  "
                 placeholder=" e.g Take coffee break"
               />
-              <img
+              {/* <img
                 src={crossIcon}
                 onClick={() => {
                   onDelete(subtask.id);
                 }}
                 className=" m-4 cursor-pointer "
-              />
+              /> */}
             </div>
           ))}
 

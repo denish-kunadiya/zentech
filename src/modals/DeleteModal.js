@@ -39,7 +39,7 @@ function DeleteModal({ type, title, onDeleteBtnClick, setIsDeleteModalOpen }) {
           </button>
           <button
             onClick={() => {
-              setIsDeleteModalOpen(false)
+              setIsDeleteModalOpen(false);
             }}
             className="w-full items-center text-[#635fc7] dark:bg-white hover:opacity-75 bg-[#635fc71a]  py-2 rounded-full"
           >

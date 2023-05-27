@@ -4,7 +4,7 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
 import Task from "./Task";
 
-function Column({ colIndex, boards, col }) {
+function Column({ colIndex, boards, col, setRefresh, refresh }) {
   const colors = [
     "bg-red-500",
     "bg-orange-500",
@@ -57,7 +57,13 @@ function Column({ colIndex, boards, col }) {
       </p>
 
       {col.tasks.map((task, index) => (
-        <Task key={index} taskIndex={index} colIndex={colIndex} />
+        <Task
+          key={index}
+          taskIndex={index}
+          colIndex={colIndex}
+          setRefresh={setRefresh}
+          refresh={refresh}
+        />
       ))}
     </div>
   );

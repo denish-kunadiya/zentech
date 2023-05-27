@@ -154,6 +154,7 @@ function Header({
           boardIndex={boardIndex}
           setRefresh={setRefresh}
           refresh={refresh}
+          // prevColIndex={prevColIndex}
         />
       )}
 

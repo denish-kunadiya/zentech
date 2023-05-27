@@ -30,7 +30,13 @@ function Home({ boards, boardIndex, setBoardDispatch }) {
           {columns?.length > 0 ? (
             <>
               {columns.map((col, index) => (
-                <Column key={index} colIndex={index} col={col} />
+                <Column
+                  key={index}
+                  colIndex={index}
+                  col={col}
+                  setRefresh={setRefresh}
+                  refresh={refresh}
+                />
               ))}
               {/* FOR ADD NEW COLUMNS */}
               {/*  */}

@@ -6,6 +6,8 @@ import boardsSlice from "../redux/boardsSlice";
 import Subtask from "../components/Subtask";
 import AddEditTaskModal from "./AddEditTaskModal";
 import DeleteModal from "./DeleteModal";
+import { deleteBoard } from "../helper/board";
+import { deleteTask } from "../helper/task";
 
 function TaskModal({
   taskIndex,
@@ -13,13 +15,15 @@ function TaskModal({
   setIsTaskModalOpen,
   boards,
   boardIndex,
+  setRefresh,
+  refresh,
 }) {
   const dispatch = useDispatch();
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // const boards = useSelector((state) => state.boards);
   console.log("boards boardIndex", boards[boardIndex]);
-  console.log("boardIndex", boardIndex);
+  console.log("boardIndex boards", boards);
   // const board = boards[boardIndex]?.find((board) => board.isActive === true);
   const columns = boards[boardIndex]?.columns;
   const col = columns.find((col, i) => i === colIndex);
@@ -44,22 +48,36 @@ function TaskModal({
     if (e.target !== e.currentTarget) {
       return;
     }
-    dispatch(
-      boardsSlice.actions.setTaskStatus({
-        taskIndex,
-        colIndex,
-        newColIndex,
-        status,
-      })
-    );
+    // dispatch(
+    //   boardsSlice.actions.setTaskStatus({
+    //     taskIndex,
+    //     colIndex,
+    //     newColIndex,
+    //     status,
+    //   })
+    // );
     setIsTaskModalOpen(false);
   };
 
   const onDeleteBtnClick = (e) => {
+    console.log("taskIndex", taskIndex);
+    console.log("colIndex", colIndex);
+    console.log("boards.id", boards[boardIndex].id);
+
     if (e.target.textContent === "Delete") {
-      dispatch(boardsSlice.actions.deleteTask({ taskIndex, colIndex }));
-      setIsTaskModalOpen(false);
-      setIsDeleteModalOpen(false);
+      deleteTask(boards[boardIndex].id, taskIndex, colIndex)
+        .then((res) => {
+          console.log("res delete task", res);
+          setRefresh(refresh + 1);
+          setIsTaskModalOpen(false);
+          setIsDeleteModalOpen(false);
+        })
+        .catch((err) => {
+          console.log("err", err);
+          setIsTaskModalOpen(false);
+
+          setIsDeleteModalOpen(false);
+        });
     } else {
       setIsDeleteModalOpen(false);
     }
@@ -163,6 +181,8 @@ function TaskModal({
           prevColIndex={colIndex}
           board={boards[boardIndex]}
           boardIndex={boardIndex}
+          setRefresh={setRefresh}
+          refresh={refresh}
         />
       )}
     </div>
