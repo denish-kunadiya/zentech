@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import crossIcon from "../assets/icon-cross.svg";
 import boardsSlice from "../redux/boardsSlice";
+import { addTask } from "../helper/task";
 
 function AddEditTaskModal({
   type,
@@ -11,15 +12,19 @@ function AddEditTaskModal({
   setIsAddTaskModalOpen,
   taskIndex,
   prevColIndex = 0,
+  board,
+  boardIndex,
+  setRefresh,
+  refresh,
 }) {
   const dispatch = useDispatch();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isValid, setIsValid] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const board = useSelector((state) => state.boards).find(
-    (board) => board.isActive
-  );
+  // const board = useSelector((state) => state.boards).find(
+  //   (board) => board.isActive
+  // );
 
   const columns = board.columns;
   const col = columns.find((col, index) => index === prevColIndex);
@@ -39,6 +44,7 @@ function AddEditTaskModal({
       return newState;
     });
   };
+  console.log("board task", board);
 
   const onChangeStatus = (e) => {
     setStatus(e.target.value);
@@ -76,15 +82,23 @@ function AddEditTaskModal({
 
   const onSubmit = (type) => {
     if (type === "add") {
-      dispatch(
-        boardsSlice.actions.addTask({
-          title,
-          description,
-          subtasks,
-          status,
-          newColIndex,
-        })
-      );
+      // dispatch(
+      //   boardsSlice.actions.addTask({
+      //     title,
+      //     description,
+      //     subtasks,
+      //     status,
+      //     newColIndex,
+      //   })
+      // );
+      // addTask(title, description, subtasks, status, newColIndex);
+      const taskObject = {
+        title,
+        description,
+        status,
+        subtasks,
+      };
+      addTask(board.id, board.name, status, taskObject);
     } else {
       dispatch(
         boardsSlice.actions.editTask({
@@ -157,7 +171,6 @@ function AddEditTaskModal({
         </div>
 
         {/* Subtasks */}
-        
 
         <div className="mt-8 flex flex-col space-y-3">
           <label className="  text-sm dark:text-white text-gray-500">
@@ -223,7 +236,7 @@ function AddEditTaskModal({
             }}
             className=" w-full items-center text-white bg-[#635fc7] py-2 rounded-full "
           >
-           {type === "edit" ? " save edit" : "Create task"}
+            {type === "edit" ? " save edit" : "Create task"}
           </button>
         </div>
       </div>

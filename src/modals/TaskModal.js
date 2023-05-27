@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import ElipsisMenu from "../components/ElipsisMenu";
 import elipsis from "../assets/icon-vertical-ellipsis.svg";
 import boardsSlice from "../redux/boardsSlice";
@@ -7,16 +7,24 @@ import Subtask from "../components/Subtask";
 import AddEditTaskModal from "./AddEditTaskModal";
 import DeleteModal from "./DeleteModal";
 
-function TaskModal({ taskIndex, colIndex, setIsTaskModalOpen }) {
+function TaskModal({
+  taskIndex,
+  colIndex,
+  setIsTaskModalOpen,
+  boards,
+  boardIndex,
+}) {
   const dispatch = useDispatch();
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
-  const columns = board.columns;
+  // const boards = useSelector((state) => state.boards);
+  console.log("boards boardIndex", boards[boardIndex]);
+  console.log("boardIndex", boardIndex);
+  // const board = boards[boardIndex]?.find((board) => board.isActive === true);
+  const columns = boards[boardIndex]?.columns;
   const col = columns.find((col, i) => i === colIndex);
-  const task = col.tasks.find((task, i) => i === taskIndex);
-  const subtasks = task.subtasks;
+  const task = col?.tasks?.find((task, i) => i === taskIndex);
+  const subtasks = task?.subtasks;
 
   let completed = 0;
   subtasks.forEach((subtask) => {
@@ -153,10 +161,19 @@ function TaskModal({ taskIndex, colIndex, setIsTaskModalOpen }) {
           type="edit"
           taskIndex={taskIndex}
           prevColIndex={colIndex}
+          board={boards[boardIndex]}
+          boardIndex={boardIndex}
         />
       )}
     </div>
   );
 }
 
-export default TaskModal;
+const mapStateToProp = (state) => {
+  return {
+    boards: state?.boardReducer?.boards,
+    boardIndex: state?.boardReducer?.index,
+  };
+};
+
+export default connect(mapStateToProp)(TaskModal);

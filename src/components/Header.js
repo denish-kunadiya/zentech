@@ -150,6 +150,10 @@ function Header({
           setIsAddTaskModalOpen={setIsTaskModalOpen}
           type="add"
           device="mobile"
+          board={boards[boardIndex]}
+          boardIndex={boardIndex}
+          setRefresh={setRefresh}
+          refresh={refresh}
         />
       )}
 

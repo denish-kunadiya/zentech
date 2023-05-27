@@ -1,20 +1,19 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import boardsSlice from "../redux/boardsSlice";
 
-function Subtask({ index, taskIndex, colIndex }) {
+function Subtask({ index, taskIndex, colIndex, boards, boardIndex }) {
   const dispatch = useDispatch();
-  const boards = useSelector((state) => state.boards);
-  const board = boards.find((board) => board.isActive === true);
-  const col = board.columns.find((col, i) => i === colIndex);
+  // const boards = useSelector((state) => state.boards);
+  // const board = boards.find((board) => board.isActive === true);
+  const col = boards[boardIndex].columns.find((col, i) => i === colIndex);
   const task = col.tasks.find((task, i) => i === taskIndex);
   const subtask = task.subtasks.find((subtask, i) => i === index);
   const checked = subtask.isCompleted;
 
   const onChange = (e) => {
-    dispatch(
-      boardsSlice.actions.setSubtaskCompleted({ index, taskIndex, colIndex })
-    );
+    // dispatch();
+    // boardsSlice.actions.setSubtaskCompleted({ index, taskIndex, colIndex })
   };
 
   return (
@@ -22,14 +21,19 @@ function Subtask({ index, taskIndex, colIndex }) {
       <input
         className=" w-4 h-4  accent-[#635fc7] cursor-pointer "
         type="checkbox"
-        checked={checked}
-        onChange={onChange}
+        // checked={checked}
+        // onChange={onChange}
       />
-      <p className={checked && " line-through opacity-30 "}>
-      {subtask.title}
-      </p>
+      <p className={checked && " line-through opacity-30 "}>{subtask.title}</p>
     </div>
   );
 }
 
-export default Subtask;
+const mapStateToProp = (state) => {
+  return {
+    boards: state?.boardReducer?.boards,
+    boardIndex: state?.boardReducer?.index,
+  };
+};
+
+export default connect(mapStateToProp)(Subtask);

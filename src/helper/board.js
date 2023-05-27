@@ -85,56 +85,15 @@ export const editBoards = async (name, columnUpdates, id) => {
   const collectionRef = collection(db, "boards");
 
   // const userId = store.getState()?.loginReducer?.user?.user?.uid;
-  console.log("columnUpdates", columnUpdates);
+  // console.log("columnUpdates", columnUpdates);
   const boardId = id; // Replace with your actual board ID
   const boardRef = doc(db, "boards", boardId);
-
-  // const updates = {};
-  // const boardSnapshot = await getDoc(boardRef);
-  // console.log("boardSnapshot", boardSnapshot);
-  // const currentColumns = boardSnapshot.data().columns;
-
-  // const updatedColumns = currentColumns.map((column, index) => {
-  //   const update = columnUpdates.find((update) => update.columnIndex === index);
-  //   if (update) {
-  //     return { ...column, name: update.name };
-  //   }
-  //   return column;
-  // });
-  // console.log("updatedColumns", updatedColumns);
 
   updateDoc(boardRef, {
     name,
     columns: columnUpdates,
   });
-
-  // boardRef.update({ name, columns: columnUpdates });
-
   console.log("Column names updated successfully.");
-
-  // columnUpdates.forEach((update) => {
-  //   const { columnIndex, name } = update;
-  //   console.log("update", update);
-  //   // console.log("newColumnName", newColumnName);
-  //   console.log("name", name);
-  //   updates[`columns.${columnIndex}.name`] = name;
-  // });
-
-  // return new Promise((resolve, reject) => {
-  //   updateDoc(boardRef, {
-  //     name,
-  //   })
-  //     .then((res) => {
-  //       console.log("res", res);
-
-  //       resolve(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log("err", err);
-
-  //       reject(err);
-  //     });
-  // });
 };
 
 export const deleteBoard = async (id) => {
