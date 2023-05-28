@@ -3,12 +3,12 @@ import loginReducer from "./auth";
 import boardReducer from "./boards";
 import boardsSlice from "./boardsSlice";
 
-let boards = boardsSlice.reducer;
+// let boards = boardsSlice.reducer;
 
 const rootReducer = combineReducers({
   loginReducer,
   boardReducer,
-  boards,
+  // boards,
 });
 
 export default rootReducer;

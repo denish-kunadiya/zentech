@@ -1,7 +1,7 @@
 import { shuffle } from "lodash";
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import boardsSlice from "../redux/boardsSlice";
+// import boardsSlice from "../redux/boardsSlice";
 import Task from "./Task";
 import { editTask } from "../helper/task";
 
@@ -23,9 +23,9 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
   // const boards = useSelector((state) => state.boards);
   // const board = boards.find((board) => board.isActive === true);
   // const col = boards[boardIndex].columns.find((col, i) => i === colIndex);
-  console.log("col", col);
+  // console.log("col", col);
 
-  console.log("boards", boards);
+  // console.log("boards", boards);
   useEffect(() => {
     setColor(shuffle(colors).pop());
   }, [dispatch]);
@@ -34,8 +34,8 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
     const { prevColIndex, taskIndex } = JSON.parse(
       e.dataTransfer.getData("text")
     );
-    console.log("prevColIndex", prevColIndex);
-    console.log("taskIndex", taskIndex);
+    // console.log("prevColIndex", prevColIndex);
+    // console.log("taskIndex", taskIndex);
     if (colIndex !== prevColIndex) {
       let ab = boards[boardIndex].columns.find((col, i) => i === colIndex);
       const prevCol = boards[boardIndex].columns.find(
@@ -45,9 +45,9 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
       task[0].status = ab.name;
       ab.tasks.push(...task);
       // .tasks.push(task);
-      console.log("ab :?", ab);
-      console.log("prevCol :?", prevCol);
-      console.log("task :?", task);
+      // console.log("ab :?", ab);
+      // console.log("prevCol :?", prevCol);
+      // console.log("task :?", task);
 
       // dispatch();
       const taskObject = {
@@ -56,7 +56,8 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
         status: task[0].status,
         subtasks: task[0].subtasks,
       };
-      editTask(boards[boardIndex].id, taskIndex, prevColIndex, taskObject)
+      console.log("taskObject before", ...task);
+      editTask(boards[boardIndex].id, taskIndex, prevColIndex, ...task)
         .then((res) => {
           console.log("res", res);
           setRefresh(refresh + 1);

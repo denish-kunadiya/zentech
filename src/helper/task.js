@@ -200,3 +200,62 @@ export const editTask = async (id, taskIndex, colIndex, taskObject) => {
       });
   });
 };
+
+export const editSubTask = async (id, subtaskId, isCompleted) => {
+  console.log("isCompleted", isCompleted);
+  const db = getFirestore();
+  const boardId = id;
+  const boardsRef = doc(db, "boards", boardId);
+
+  return new Promise((resolve, reject) => {
+    getDoc(boardsRef)
+      .then((res) => {
+        if (res.exists() || res.data() !== undefined) {
+          const boardData = res.data();
+
+          // Iterate over the columns and tasks to find the subtask
+          let found = false;
+          for (
+            let colIndex = 0;
+            colIndex < boardData.columns.length;
+            colIndex++
+          ) {
+            const tasks = boardData.columns[colIndex].tasks;
+            for (let taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
+              const subtasks = tasks[taskIndex].subtasks;
+              const subtaskIndex = subtasks.findIndex(
+                (subtask) => subtask.id === subtaskId
+              );
+              if (subtaskIndex !== -1) {
+                // Update the 'isCompleted' field of the subtask
+                tasks[taskIndex].subtasks[subtaskIndex].isCompleted =
+                  isCompleted;
+                found = true;
+                break;
+              }
+            }
+            if (found) {
+              break;
+            }
+          }
+
+          if (found) {
+            // Update the board document with the modified data
+            updateDoc(boardsRef, boardData)
+              .then((res) => {
+                resolve("Subtask updated successfully!");
+              })
+              .catch((err) => reject("Subtask not found."));
+            // console.log("Subtask updated successfully!");
+          } else {
+            console.log("Subtask not found.");
+          }
+        } else {
+          console.log("Board document does not exist or access is denied.");
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};

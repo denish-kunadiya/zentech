@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import crossIcon from "../assets/icon-cross.svg";
-import boardsSlice from "../redux/boardsSlice";
+// import boardsSlice from "../redux/boardsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { createBoard, editBoards } from "../helper/board";
 import { toast } from "react-toastify";
+import StyledButton from "../shared/StyledButton";
 
 function AddEditBoardModal({
   type,
@@ -18,8 +19,11 @@ function AddEditBoardModal({
   const dispatch = useDispatch();
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [name, setName] = useState("");
-  const [newColumns, setNewColumns] = useState([]);
+  const [newColumns, setNewColumns] = useState([
+    { name: "Todo", tasks: [], id: uuidv4() },
+  ]);
   const [isValid, setIsValid] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   console.log("processing", processing === true);
 
@@ -64,6 +68,7 @@ function AddEditBoardModal({
   // console.log("newColumns", newColumns);
   const onSubmit = (type) => {
     console.log("type", type);
+    setLoading(true);
     if (type === "add") {
       // dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
       createBoard(name, newColumns)
@@ -72,24 +77,29 @@ function AddEditBoardModal({
           setIsBoardModalOpen(false);
           setRefresh(refresh + 1);
           toast.success("Board created successfully.");
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
           setIsBoardModalOpen(false);
           toast.error("Error in creating board.");
+          setLoading(false);
         });
     } else {
+      setLoading(true);
       editBoards(name, newColumns, board.id)
         .then((res) => {
           // console.log("res", res);
           setRefresh(refresh + 1);
           setIsBoardModalOpen(false);
           toast.success("Board updated successfully.");
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
           setIsBoardModalOpen(false);
           toast.error("Error in updating board.");
+          setLoading(false);
         });
       // dispatch(boardsSlice.actions.editBoard({ name, newColumns }));
     }
@@ -164,15 +174,15 @@ function AddEditBoardModal({
             >
               + Add New Column
             </button>
-            <button
+
+            <StyledButton
               onClick={() => {
                 const isValid = validate();
                 if (isValid === true) onSubmit(type);
               }}
-              className=" w-full items-center hover:opacity-70 dark:text-white dark:bg-[#635fc7] mt-8 relative  text-white bg-[#635fc7] py-2 rounded-full"
-            >
-              {type === "add" ? "Create New Board" : "Save Changes"}
-            </button>
+              disabled={loading}
+              btnText={type === "add" ? "Create New Board" : "Save Changes"}
+            />
           </div>
         </div>
       </div>

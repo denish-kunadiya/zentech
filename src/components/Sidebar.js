@@ -9,7 +9,7 @@ import lightIcon from "../assets/icon-light-theme.svg";
 import showSidebarIcon from "../assets/icon-show-sidebar.svg";
 import hideSidebarIcon from "../assets/icon-hide-sidebar.svg";
 
-import boardsSlice from "../redux/boardsSlice";
+// import boardsSlice from "../redux/boardsSlice";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
 import { getBoards } from "../helper/board";
 

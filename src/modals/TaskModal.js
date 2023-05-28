@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import ElipsisMenu from "../components/ElipsisMenu";
 import elipsis from "../assets/icon-vertical-ellipsis.svg";
-import boardsSlice from "../redux/boardsSlice";
-import Subtask from "../components/Subtask";
+// import boardsSlice from "../redux/boardsSlice";
+import CheckableSubtask from "../components/Task/CheckableSubtask";
 import AddEditTaskModal from "./AddEditTaskModal";
 import DeleteModal from "./DeleteModal";
 import { deleteBoard } from "../helper/board";
@@ -22,6 +22,7 @@ function TaskModal({
   const dispatch = useDispatch();
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   // const boards = useSelector((state) => state.boards);
   console.log("boards boardIndex", boards[boardIndex]);
   console.log("boardIndex boards", boards);
@@ -65,6 +66,7 @@ function TaskModal({
     console.log("colIndex", colIndex);
     console.log("boards.id", boards[boardIndex].id);
 
+    setLoading(true);
     if (e.target.textContent === "Delete") {
       deleteTask(boards[boardIndex].id, taskIndex, colIndex)
         .then((res) => {
@@ -73,11 +75,12 @@ function TaskModal({
           setIsTaskModalOpen(false);
           setIsDeleteModalOpen(false);
           toast.success("Task successfully deleted");
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
           setIsTaskModalOpen(false);
-
+          setLoading(false);
           setIsDeleteModalOpen(false);
         });
     } else {
@@ -124,10 +127,13 @@ function TaskModal({
             />
           )}
         </div>
-        <p className=" text-gray-500 font-[600] tracking-wide text-xs pt-6">
-          {task.description}
-        </p>
 
+        <div className="mt-8 flex flex-col space-y-3">
+          <label className="  text-sm dark:text-white text-gray-500">
+            Task Description
+          </label>
+          <p className=" tracking-wide text-xs">{task.description}</p>
+        </div>
         <p className=" pt-6 text-gray-500 tracking-widest text-sm">
           Subtasks ({completed} of {subtasks.length})
         </p>
@@ -137,11 +143,12 @@ function TaskModal({
         <div className=" mt-3 space-y-2">
           {subtasks.map((subtask, index) => {
             return (
-              <Subtask
+              <CheckableSubtask
                 index={index}
                 taskIndex={taskIndex}
                 colIndex={colIndex}
                 key={index}
+                taskDetail={subtask}
               />
             );
           })}
@@ -153,7 +160,8 @@ function TaskModal({
           <label className="  text-sm dark:text-white text-gray-500">
             Current Status
           </label>
-          <select
+          <label>{status}</label>
+          {/* <select
             className=" select-status flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0  border-[1px] border-gray-300 focus:outline-[#635fc7] outline-none"
             value={status}
             onChange={onChange}
@@ -163,7 +171,7 @@ function TaskModal({
                 {col.name}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
       </div>
       {isDeleteModalOpen && (
@@ -171,6 +179,8 @@ function TaskModal({
           onDeleteBtnClick={onDeleteBtnClick}
           type="task"
           title={task.title}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          disabled={loading}
         />
       )}
 

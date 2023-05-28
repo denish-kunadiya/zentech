@@ -18,10 +18,6 @@ function Home({ boards, boardIndex, setBoardDispatch }) {
     setColumns(boards[boardIndex]?.columns);
   }, [boardIndex, boards]);
 
-  console.log("columns", columns);
-  console.log("boards :::::::::::::::::::;", boards);
-  console.log("boards :::::::::::::::::::;boardIndex", boardIndex);
-
   return (
     <AfterAuth>
       {/* Columns Section */}
@@ -80,7 +76,6 @@ const mapDispatchToProp = (dispatch) => {
 };
 
 const mapStateToProp = (state) => {
-  console.log("state", state);
   return {
     boards: state?.boardReducer?.boards,
     boardIndex: state?.boardReducer?.index,

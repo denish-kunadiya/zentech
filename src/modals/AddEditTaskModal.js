@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 import crossIcon from "../assets/icon-cross.svg";
-import boardsSlice from "../redux/boardsSlice";
+// import boardsSlice from "../redux/boardsSlice";
 import { addTask, editTask } from "../helper/task";
 import { toast } from "react-toastify";
+import StyledButton from "../shared/StyledButton";
+import StatusSelect from "../components/Task/StatusSelect";
+import SubTask from "../components/Task/SubTask";
 
 function AddEditTaskModal({
   type,
@@ -23,6 +26,7 @@ function AddEditTaskModal({
   const [isValid, setIsValid] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const columns = board.columns;
   const col = columns.find((col, index) => index === prevColIndex);
@@ -76,26 +80,17 @@ function AddEditTaskModal({
     setIsFirstLoad(false);
   }
 
-  const onDelete = (id) => {
-    // setSubtasks((prevState) => prevState.filter((el) => el.id !== id));
-    console.log("subtask id", id);
-    // const taskObject = {
-    //   title,
-    //   description,
-    //   status,
-    //   subtasks,
-    // };
-    // addTask(board.id, status, taskObject)
-    //   .then((res) => {
-    //     console.log("res add task", res);
-    //     setRefresh(refresh + 1);
-    //   })
-    //   .catch((err) => {
-    //     console.log("err", err);
-    //   });
+  const onDelete = (idx) => {
+    setSubtasks((prevState) => {
+      const newState = [...prevState];
+      newState.splice(idx, 1);
+      // subtask.title = newValue;
+      return newState;
+    });
   };
   console.log("status", status);
   const onSubmit = (type) => {
+    setLoading(true);
     if (type === "add") {
       // dispatch(
       //   boardsSlice.actions.addTask({
@@ -119,12 +114,15 @@ function AddEditTaskModal({
           setRefresh(refresh + 1);
           setIsAddTaskModalOpen(false);
           toast.success(res);
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
           toast.success("Error in creating task.");
+          setLoading(false);
         });
     } else {
+      setLoading(true);
       const taskObject = {
         title,
         description,
@@ -137,10 +135,13 @@ function AddEditTaskModal({
           setRefresh(refresh + 1);
           setIsAddTaskModalOpen(false);
           toast.success("Task updated successfully.");
+          setIsTaskModalOpen(false);
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
           toast.success("Error in updating task.");
+          setLoading(false);
         });
     }
   };
@@ -204,30 +205,11 @@ function AddEditTaskModal({
         {/* Subtasks */}
 
         <div className="mt-8 flex flex-col space-y-3">
-          <label className="  text-sm dark:text-white text-gray-500">
-            Subtasks
-          </label>
-
-          {subtasks.map((subtask, index) => (
-            <div key={index} className=" flex items-center w-full ">
-              <input
-                onChange={(e) => {
-                  onChangeSubtasks(subtask.id, e.target.value);
-                }}
-                type="text"
-                value={subtask.title}
-                className=" bg-transparent outline-none focus:border-0 flex-grow px-4 py-2 rounded-md text-sm  border-[0.5px] border-gray-600 focus:outline-[#635fc7] outline-[1px]  "
-                placeholder=" e.g Take coffee break"
-              />
-              {/* <img
-                src={crossIcon}
-                onClick={() => {
-                  onDelete(subtask.id);
-                }}
-                className=" m-4 cursor-pointer "
-              /> */}
-            </div>
-          ))}
+          <SubTask
+            subtasks={subtasks}
+            onChangeSubtasks={onChangeSubtasks}
+            onDelete={onDelete}
+          />
 
           <button
             className=" w-full items-center dark:text-[#635fc7] dark:bg-white  text-white bg-[#635fc7] py-2 rounded-full "
@@ -244,7 +226,7 @@ function AddEditTaskModal({
 
         {/* current Status  */}
         <div className="mt-8 flex flex-col space-y-3">
-          <label className="  text-sm dark:text-white text-gray-500">
+          {/* <label className="  text-sm dark:text-white text-gray-500">
             Current Status
           </label>
           <select
@@ -255,8 +237,13 @@ function AddEditTaskModal({
             {columns.map((column, index) => (
               <option key={index}>{column.name}</option>
             ))}
-          </select>
-          <button
+          </select> */}
+          <StatusSelect
+            status={status}
+            onChangeStatus={onChangeStatus}
+            columns={columns}
+          />
+          {/* <button
             onClick={() => {
               const isValid = validate();
               if (isValid) {
@@ -268,7 +255,18 @@ function AddEditTaskModal({
             className=" w-full items-center text-white bg-[#635fc7] py-2 rounded-full "
           >
             {type === "edit" ? " save edit" : "Create task"}
-          </button>
+          </button> */}
+          <StyledButton
+            onClick={() => {
+              const isValid = validate();
+              if (isValid) {
+                onSubmit(type);
+                // type === "edit" && setIsTaskModalOpen(false);
+              }
+            }}
+            disabled={loading}
+            btnText={type === "edit" ? " save edit" : "Create task"}
+          />
         </div>
       </div>
     </div>

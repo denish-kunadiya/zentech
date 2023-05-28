@@ -9,7 +9,7 @@ import AddEditTaskModal from "../modals/AddEditTaskModal";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
 import { connect, useDispatch, useSelector } from "react-redux";
 import DeleteModal from "../modals/DeleteModal";
-import boardsSlice from "../redux/boardsSlice";
+// import boardsSlice from "../redux/boardsSlice";
 import { auth } from "../firebase";
 import { deleteBoard } from "../helper/board";
 import * as boardActions from "../redux/boards/action";
@@ -29,6 +29,7 @@ function Header({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setBoardDispatch();
@@ -52,30 +53,24 @@ function Header({
   };
 
   const onDeleteBtnClick = (e) => {
+    setLoading(true);
     if (e.target.textContent === "Delete") {
       let id = boards[boardIndex].id;
       deleteBoard(id)
         .then((res) => {
-          console.log("res", res);
           setRefresh(refresh + 1);
           setIsDeleteModalOpen(false);
           toast.success("Board successfully deleted.");
+          setLoading(false);
         })
         .catch((err) => {
           console.log("err", err);
+          setLoading(false);
         });
-
-      // dispatch(boardsSlice.actions.deleteBoard());
-      // dispatch(boardsSlice.actions.setBoardActive({ index: 0 }));
     } else {
       setIsDeleteModalOpen(false);
     }
   };
-
-  const users = auth.currentUser;
-  const userId = user.uid;
-  // console.log("users", users);
-  // console.log("userId", userId);
 
   return (
     <div className=" p-4 fixed left-0 bg-white dark:bg-[#2b2c37] z-50 right-0 ">
@@ -83,8 +78,8 @@ function Header({
         {/* Left Side  */}
         <div className=" flex items-center space-x-2  md:space-x-4">
           <img src={Logo} alt=" Logo " className=" h-6 w-6" />
-          <h3 className=" md:text-4xl  hidden md:inline-block font-bold  font-sans">
-            kanban
+          <h3 className=" md:text-5xl  hidden md:inline-block font-bold  font-sans">
+            Trello
           </h3>
           <div className=" flex items-center ">
             <h3 className=" truncate max-w-[200px] md:text-2xl text-xl font-bold md:ml-20 font-sans  ">
@@ -103,7 +98,7 @@ function Header({
 
         <div className=" flex space-x-4 items-center md:space-x-6 ">
           <button
-            className=" button hidden md:block "
+            className=" w-36 rounded-full  px-0 py-2 text-sm   text-[#635fc7] font-bold transition duration-150 ease-in-out border-2 dark:text-white border-indigo-400 dark:border-white text-center shadow hidden md:block "
             onClick={() => {
               setIsTaskModalOpen((prevState) => !prevState);
             }}
@@ -114,7 +109,7 @@ function Header({
             onClick={() => {
               setIsTaskModalOpen((prevState) => !prevState);
             }}
-            className=" button py-1 px-3 md:hidden "
+            className=" font-bold transition duration-150 ease-in-out button py-1 px-3 md:hidden "
           >
             +
           </button>
@@ -179,6 +174,7 @@ function Header({
           onDeleteBtnClick={onDeleteBtnClick}
           setRefresh={setRefresh}
           refresh={refresh}
+          disabled={loading}
         />
       )}
     </div>

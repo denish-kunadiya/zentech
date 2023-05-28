@@ -5,11 +5,10 @@ import boardIcon from "../assets/icon-board.svg";
 import useDarkMode from "../hooks/useDarkMode";
 import darkIcon from "../assets/icon-dark-theme.svg";
 import lightIcon from "../assets/icon-light-theme.svg";
-import boardsSlice from "../redux/boardsSlice";
-
+// import boardsSlice from "../redux/boardsSlice";
 
 function HeaderDropDown({ setOpenDropdown, setIsBoardModalOpen }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [colorTheme, setTheme] = useDarkMode();
   const [darkSide, setDarkSide] = useState(
     colorTheme === "light" ? true : false
@@ -40,7 +39,7 @@ function HeaderDropDown({ setOpenDropdown, setIsBoardModalOpen }) {
         </h3>
 
         <div className=" dropdown-borad  ">
-          {boards.map((board, index) => (
+          {/* {boards.map((board, index) => (
             <div
               className={` flex items-baseline space-x-2 px-5 py-4  ${
                 board.isActive &&
@@ -54,14 +53,15 @@ function HeaderDropDown({ setOpenDropdown, setIsBoardModalOpen }) {
               <img src={boardIcon} className="  filter-white  h-4 " />{" "}
               <p className=" text-lg font-bold  ">{board.name}</p>
             </div>
-          ))}
+          ))} */}
 
-          <div 
-          onClick={() => {
-            setIsBoardModalOpen(true);
-            setOpenDropdown(false)
-          }}
-          className=" flex items-baseline space-x-2  text-[#635fc7] px-5 py-4  ">
+          <div
+            onClick={() => {
+              setIsBoardModalOpen(true);
+              setOpenDropdown(false);
+            }}
+            className=" flex items-baseline space-x-2  text-[#635fc7] px-5 py-4  "
+          >
             <img src={boardIcon} className="   filter-white  h-4 " />
             <p className=" text-lg font-bold  ">Create New Board </p>
           </div>
