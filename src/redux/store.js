@@ -1,16 +1,3 @@
-// import { configureStore } from "@reduxjs/toolkit";
-// import boardsSlice from "./boardsSlice";
-
-
-// const store = configureStore({
-//   reducer: {
-//     boards: boardsSlice.reducer,
-//   }
-// })
-
-// export default store
-
-
 import { createStore, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { persistStore, persistReducer } from "redux-persist";
@@ -28,11 +15,13 @@ const composeEnhancers =
 const persistConfig = {
   key: "root",
   storage,
-  // whitelist: ["loginUsers", "configurations"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)));
+export const store = createStore(
+  persistedReducer,
+  composeEnhancers(applyMiddleware(thunk))
+);
 
 export const persistor = persistStore(store);

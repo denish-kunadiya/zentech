@@ -3,8 +3,8 @@ import Logo from "../assets/logo-mobile.svg";
 import iconDown from "../assets/icon-chevron-down.svg";
 import iconUp from "../assets/icon-chevron-up.svg";
 import elipsis from "../assets/icon-vertical-ellipsis.svg";
-import HeaderDropDown from "./HeaderDropDown";
-import ElipsisMenu from "./ElipsisMenu";
+import HeaderDropDown from "./HeaderDropdown/HeaderDropDown";
+import ElipsisMenu from "./HeaderDropdown/ElipsisMenu";
 import AddEditTaskModal from "../modals/AddEditTaskModal";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
 import { connect, useDispatch, useSelector } from "react-redux";
@@ -182,7 +182,6 @@ function Header({
 }
 
 const mapStateToProp = (state) => {
-  console.log("state plan screen ::", state);
   return {
     user: state?.loginReducer?.user,
     boards: state?.boardReducer?.boards,

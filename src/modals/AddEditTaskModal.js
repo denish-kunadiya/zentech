@@ -25,6 +25,10 @@ function AddEditTaskModal({
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const [isValid, setIsValid] = useState(true);
   const [title, setTitle] = useState("");
+  const [label, setlabel] = useState({
+    label: "",
+    color: "",
+  });
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +52,6 @@ function AddEditTaskModal({
       return newState;
     });
   };
-  console.log("board task prevColIndex", prevColIndex);
 
   const onChangeStatus = (e) => {
     setStatus(e.target.value);
@@ -88,20 +91,9 @@ function AddEditTaskModal({
       return newState;
     });
   };
-  console.log("status", status);
   const onSubmit = (type) => {
     setLoading(true);
     if (type === "add") {
-      // dispatch(
-      //   boardsSlice.actions.addTask({
-      //     title,
-      //     description,
-      //     subtasks,
-      //     status,
-      //     newColIndex,
-      //   })
-      // );
-      // addTask(title, description, subtasks, status, newColIndex);
       const taskObject = {
         title,
         description,
@@ -110,14 +102,12 @@ function AddEditTaskModal({
       };
       addTask(board.id, status, taskObject)
         .then((res) => {
-          console.log("res add task", res);
           setRefresh(refresh + 1);
           setIsAddTaskModalOpen(false);
           toast.success(res);
           setLoading(false);
         })
         .catch((err) => {
-          console.log("err", err);
           toast.success("Error in creating task.");
           setLoading(false);
         });
@@ -226,42 +216,16 @@ function AddEditTaskModal({
 
         {/* current Status  */}
         <div className="mt-8 flex flex-col space-y-3">
-          {/* <label className="  text-sm dark:text-white text-gray-500">
-            Current Status
-          </label>
-          <select
-            value={status}
-            onChange={onChangeStatus}
-            className=" select-status flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0  border-[1px] border-gray-300 focus:outline-[#635fc7] outline-none"
-          >
-            {columns.map((column, index) => (
-              <option key={index}>{column.name}</option>
-            ))}
-          </select> */}
           <StatusSelect
             status={status}
             onChangeStatus={onChangeStatus}
             columns={columns}
           />
-          {/* <button
-            onClick={() => {
-              const isValid = validate();
-              if (isValid) {
-                onSubmit(type);
-
-                type === "edit" && setIsTaskModalOpen(false);
-              }
-            }}
-            className=" w-full items-center text-white bg-[#635fc7] py-2 rounded-full "
-          >
-            {type === "edit" ? " save edit" : "Create task"}
-          </button> */}
           <StyledButton
             onClick={() => {
               const isValid = validate();
               if (isValid) {
                 onSubmit(type);
-                // type === "edit" && setIsTaskModalOpen(false);
               }
             }}
             disabled={loading}

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
 import AfterAuth from "../HOC";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
-import Column from "./Column";
-import EmptyBoard from "./EmptyBoard";
+import Column from "./Column/Column";
+import EmptyBoard from "./Boards/EmptyBoard";
 import Sidebar from "./Sidebar";
 import * as boardActions from "../redux/boards/action";
 function Home({ boards, boardIndex, setBoardDispatch }) {

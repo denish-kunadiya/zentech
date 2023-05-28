@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import ElipsisMenu from "../components/ElipsisMenu";
+import ElipsisMenu from "../components/HeaderDropdown/ElipsisMenu";
 import elipsis from "../assets/icon-vertical-ellipsis.svg";
 // import boardsSlice from "../redux/boardsSlice";
 import CheckableSubtask from "../components/Task/CheckableSubtask";
@@ -9,6 +9,7 @@ import DeleteModal from "./DeleteModal";
 import { deleteBoard } from "../helper/board";
 import { deleteTask } from "../helper/task";
 import { toast } from "react-toastify";
+import TaskProgress from "../components/Task/TaskProgress";
 
 function TaskModal({
   taskIndex,
@@ -23,10 +24,6 @@ function TaskModal({
   const [isElipsisMenuOpen, setIsElipsisMenuOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const boards = useSelector((state) => state.boards);
-  console.log("boards boardIndex", boards[boardIndex]);
-  console.log("boardIndex boards", boards);
-  // const board = boards[boardIndex]?.find((board) => board.isActive === true);
   const columns = boards[boardIndex]?.columns;
   const col = columns.find((col, i) => i === colIndex);
   const task = col?.tasks?.find((task, i) => i === taskIndex);
@@ -38,13 +35,9 @@ function TaskModal({
       completed++;
     }
   });
+  const percentage = (completed / subtasks.length) * 100;
 
   const [status, setStatus] = useState(task.status);
-  const [newColIndex, setNewColIndex] = useState(columns.indexOf(col));
-  const onChange = (e) => {
-    setStatus(e.target.value);
-    setNewColIndex(e.target.selectedIndex);
-  };
 
   const onClose = (e) => {
     if (e.target !== e.currentTarget) {
@@ -62,15 +55,10 @@ function TaskModal({
   };
 
   const onDeleteBtnClick = (e) => {
-    console.log("taskIndex", taskIndex);
-    console.log("colIndex", colIndex);
-    console.log("boards.id", boards[boardIndex].id);
-
     setLoading(true);
     if (e.target.textContent === "Delete") {
       deleteTask(boards[boardIndex].id, taskIndex, colIndex)
         .then((res) => {
-          console.log("res delete task", res);
           setRefresh(refresh + 1);
           setIsTaskModalOpen(false);
           setIsDeleteModalOpen(false);
@@ -78,7 +66,6 @@ function TaskModal({
           setLoading(false);
         })
         .catch((err) => {
-          console.log("err", err);
           setIsTaskModalOpen(false);
           setLoading(false);
           setIsDeleteModalOpen(false);
@@ -149,10 +136,13 @@ function TaskModal({
                 colIndex={colIndex}
                 key={index}
                 taskDetail={subtask}
+                setRefresh={setRefresh}
+                refresh={refresh}
               />
             );
           })}
         </div>
+        <TaskProgress percentage={percentage} />
 
         {/* Current Status Section */}
 
@@ -161,17 +151,6 @@ function TaskModal({
             Current Status
           </label>
           <label>{status}</label>
-          {/* <select
-            className=" select-status flex-grow px-4 py-2 rounded-md text-sm bg-transparent focus:border-0  border-[1px] border-gray-300 focus:outline-[#635fc7] outline-none"
-            value={status}
-            onChange={onChange}
-          >
-            {columns.map((col, index) => (
-              <option className="status-options" key={index}>
-                {col.name}
-              </option>
-            ))}
-          </select> */}
         </div>
       </div>
       {isDeleteModalOpen && (

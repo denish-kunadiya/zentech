@@ -1,6 +1,6 @@
 import { LOGIN_SUCCESSFULL, LOGOUT_SUCCESSFUL } from "./type";
 
-export const setLoginUser = payload => {
+export const setLoginUser = (payload) => {
   // console.log("payload ser", payload);
   return {
     type: LOGIN_SUCCESSFULL,
@@ -8,9 +8,7 @@ export const setLoginUser = payload => {
   };
 };
 
-
-export const logout = payload => {
-  console.log('ca;;lled')
+export const logout = (payload) => {
   return {
     type: LOGOUT_SUCCESSFUL,
     payload,

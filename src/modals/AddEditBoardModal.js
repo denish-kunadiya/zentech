@@ -25,8 +25,6 @@ function AddEditBoardModal({
   const [isValid, setIsValid] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  console.log("processing", processing === true);
-
   if (type === "edit" && isFirstLoad && board) {
     setNewColumns(
       board?.columns?.map((col, index) => {
@@ -50,9 +48,7 @@ function AddEditBoardModal({
     setIsValid(true);
     return true;
   };
-  // console.log("name", name);
   const onChange = (id, newValue, index) => {
-    // console.log("index", index);
     setNewColumns((prevState) => {
       const newState = [...prevState];
       const column = newState.find((col) => col.id === id);
@@ -65,15 +61,12 @@ function AddEditBoardModal({
   const onDelete = (id) => {
     setNewColumns((prevState) => prevState.filter((el) => el.id !== id));
   };
-  // console.log("newColumns", newColumns);
   const onSubmit = (type) => {
-    console.log("type", type);
     setLoading(true);
     if (type === "add") {
       // dispatch(boardsSlice.actions.addBoard({ name, newColumns }));
       createBoard(name, newColumns)
         .then((res) => {
-          console.log("res", res);
           setIsBoardModalOpen(false);
           setRefresh(refresh + 1);
           toast.success("Board created successfully.");
@@ -89,14 +82,12 @@ function AddEditBoardModal({
       setLoading(true);
       editBoards(name, newColumns, board.id)
         .then((res) => {
-          // console.log("res", res);
           setRefresh(refresh + 1);
           setIsBoardModalOpen(false);
           toast.success("Board updated successfully.");
           setLoading(false);
         })
         .catch((err) => {
-          console.log("err", err);
           setIsBoardModalOpen(false);
           toast.error("Error in updating board.");
           setLoading(false);
@@ -192,7 +183,6 @@ function AddEditBoardModal({
 }
 
 const mapStateToProp = (state) => {
-  console.log("state plan screen ::", state);
   return {
     processing: state?.boardReducer?.processing,
   };

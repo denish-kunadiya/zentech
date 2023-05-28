@@ -4,12 +4,11 @@ import { editSubTask } from "../../helper/task";
 import { toast } from "react-toastify";
 
 function CheckableSubtask({
-  index,
-  taskIndex,
-  colIndex,
   boards,
   boardIndex,
   taskDetail,
+  setRefresh,
+  refresh,
 }) {
   // const boards = useSelector((state) => state.boards);
   // const board = boards.find((board) => board.isActive === true);
@@ -24,6 +23,7 @@ function CheckableSubtask({
     setChecked(e.target.checked);
     editSubTask(boards[boardIndex].id, subtaskId, e.target.checked)
       .then((res) => {
+        setRefresh(refresh + 1);
         toast.success("Subtask status is changed");
       })
       .catch((err) => console.log("err", err));

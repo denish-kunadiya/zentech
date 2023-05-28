@@ -1,28 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
+import React, { useEffect, useState } from "react";
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
-const AfterAuth = ({children}) => {
-    const [windowSize, setWindowSize] = useState([
-        window.innerWidth,
-        window.innerHeight,
-      ]);
-    
-      useEffect(() => {
-        const handleWindowResize = () => {
-          setWindowSize([window.innerWidth, window.innerHeight]);
-        };
-    
-        window.addEventListener("resize", handleWindowResize);
-    
-        return () => {
-          window.removeEventListener("resize", handleWindowResize);
-        };
-      });
+const AfterAuth = ({ children }) => {
+  const [windowSize, setWindowSize] = useState([
+    window.innerWidth,
+    window.innerHeight,
+  ]);
 
-    const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowSize([window.innerWidth, window.innerHeight]);
+    };
 
-    const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+    window.addEventListener("resize", handleWindowResize);
+
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  });
+
+  const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
+
+  const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
   return (
     <div
@@ -41,17 +41,16 @@ const AfterAuth = ({children}) => {
         />
       )}
 
-<Header
-          setIsBoardModalOpen={setIsBoardModalOpen}
-          isBoardModalOpen={isBoardModalOpen}
-        />
+      <Header
+        setIsBoardModalOpen={setIsBoardModalOpen}
+        isBoardModalOpen={isBoardModalOpen}
+      />
 
       {/* Columns Section */}
 
-     {children}
-      
+      {children}
     </div>
-  )
-}
+  );
+};
 
-export default AfterAuth
+export default AfterAuth;

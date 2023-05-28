@@ -15,12 +15,7 @@ import {
 } from "firebase/firestore";
 
 export const createBoard = async (name, newColumns) => {
-  console.log("name", name);
-  console.log("newColumns", newColumns);
   const userId = store.getState()?.loginReducer?.user?.user?.uid;
-  //   const users = auth.currentUser;
-  //   const userId = users.uid;
-  console.log("userId", userId);
   try {
     const db = getFirestore();
     const collectionRef = collection(db, "boards");
@@ -31,10 +26,8 @@ export const createBoard = async (name, newColumns) => {
       userId, // Associate the board with the user
     });
 
-    console.log("Board created successfully:", docRef.id);
     // You can redirect the user to a new page or perform additional actions here
   } catch (error) {
-    console.error("Board creation error:", error);
     // Handle board creation error
   }
 };
@@ -62,14 +55,10 @@ export const getBoards = () => {
 
   const userId = store.getState()?.loginReducer?.user?.user?.uid;
 
-  console.log("userId", userId);
-
   const q = query(collectionRef, where("userId", "==", userId));
   return new Promise((resolve, reject) => {
     getDocs(q)
       .then((res) => {
-        console.log("res", res);
-
         resolve(res);
       })
       .catch((err) => {
@@ -84,8 +73,6 @@ export const editBoards = async (name, columnUpdates, id) => {
   const db = getFirestore();
   const collectionRef = collection(db, "boards");
 
-  // const userId = store.getState()?.loginReducer?.user?.user?.uid;
-  // console.log("columnUpdates", columnUpdates);
   const boardId = id; // Replace with your actual board ID
   const boardRef = doc(db, "boards", boardId);
 
