@@ -6,8 +6,7 @@ import useDarkMode from "../hooks/useDarkMode";
 import darkIcon from "../assets/icon-dark-theme.svg";
 import lightIcon from "../assets/icon-light-theme.svg";
 
-import showSidebarIcon from "../assets/icon-show-sidebar.svg";
-import hideSidebarIcon from "../assets/icon-hide-sidebar.svg";
+import * as loginAction from "../redux/auth/action";
 
 // import boardsSlice from "../redux/boardsSlice";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
@@ -15,6 +14,7 @@ import { getBoards } from "../helper/board";
 
 import * as boardActions from "../redux/boards/action";
 import Loader from "./Loader.js";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar({
   isSideBarOpen,
@@ -23,8 +23,9 @@ function Sidebar({
   setBoardActive,
   boardIndex,
   board,
+  logout,
 }) {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);
   const [boards, setBoards] = useState([]);
   const [refresh, setRefresh] = useState(0);
@@ -49,98 +50,143 @@ function Sidebar({
   const toggleSidebar = () => {
     setIsSideBarOpen((curr) => !curr);
   };
+  const logoutUser = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <div>
       {loading ? (
         <Loader />
       ) : (
-        <div
-          className={
-            isSideBarOpen
-              ? `min-w-[261px] bg-white dark:bg-[#2b2c37]  fixed top-[72px] h-screen  items-center left-0 z-20`
-              : ` bg-[#635FC7] dark:bg-[#2b2c37] dark:hover:bg-[#635FC7] top-auto bottom-10 justify-center items-center hover:opacity-80 cursor-pointer  p-0 transition duration-300 transform fixed felx w-[56px] h-[48px] rounded-r-full  `
-          }
-        >
-          <div>
-            {/* reWrite modal  */}
+        <>
+          <button
+            data-drawer-target="separator-sidebar"
+            data-drawer-toggle="separator-sidebar"
+            aria-controls="separator-sidebar"
+            type="button"
+            class="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 fixed top-[72px]"
+          >
+            <span class="sr-only">Open sidebar</span>
+            <svg
+              class="w-6 h-6"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                fill-rule="evenodd"
+                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+              ></path>
+            </svg>
+          </button>
 
-            {isSideBarOpen && (
-              <div className=" bg-white  dark:bg-[#2b2c37]    w-full   py-4 rounded-xl">
-                <h3 className=" dark:text-gray-300 text-gray-600 font-semibold mx-4 mb-8 ">
-                  ALL BOARDS ({boards?.length})
-                </h3>
-
-                <div className="  dropdown-borad flex flex-col h-[70vh]  justify-between ">
-                  <div>
-                    {boards?.map((board, index) => (
-                      <div
-                        className={` flex items-baseline space-x-2 px-5 mr-8 rounded-r-full duration-500 ease-in-out py-4 cursor-pointer hover:bg-[#635fc71a] hover:text-[#635fc7] dark:hover:bg-white dark:hover:text-[#635fc7] dark:text-white  ${
-                          boardIndex === index &&
-                          " bg-[#635fc7] rounded-r-full text-white mr-8 "
-                        } `}
-                        key={index}
-                        onClick={() => setBoardActive(index)}
+          <aside
+            id="separator-sidebar"
+            class="fixed top-[70px] left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0 "
+            aria-label="Sidebar"
+          >
+            <div class=" px-3 py-4  overflow-y-auto bg-gray-50 dark:bg-gray-800 h-[100vh]">
+              <ul class="space-y-2 font-medium mt-4">
+                {boards?.map((board, index) => (
+                  <li>
+                    <a
+                      key={index}
+                      onClick={() => setBoardActive(index)}
+                      class={`cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-white ${
+                        boardIndex === index && "bg-gray-300"
+                      } hover:bg-gray-300 dark:hover:bg-gray-700 ${
+                        boardIndex === index && "dark:bg-gray-700"
+                      }`}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        <img src={boardIcon} className="  filter-white  h-4 " />{" "}
-                        <p className=" text-lg font-bold ">{board.name}</p>
-                      </div>
-                    ))}
-
-                    <div
-                      className=" flex  items-baseline space-x-2  mr-8 rounded-r-full duration-500 ease-in-out cursor-pointer text-[#635fc7] px-5 py-4 hover:bg-[#635fc71a] hover:text-[#635fc7] dark:hover:bg-white  "
-                      onClick={() => {
-                        setIsBoardModalOpen(true);
-                      }}
-                    >
-                      <img src={boardIcon} className="   filter-white  h-4 " />
-                      <p className=" text-lg font-bold  ">Create New Board </p>
-                    </div>
-                  </div>
-
-                  <div className=" mx-2  p-4 relative space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg">
-                    <img src={lightIcon} alt="sun indicating light mode" />
-
-                    <Switch
-                      checked={darkSide}
-                      onChange={toggleDarkMode}
-                      className={`${
-                        darkSide ? "bg-[#635fc7]" : "bg-gray-200"
-                      } relative inline-flex h-6 w-11 items-center rounded-full`}
-                    >
-                      <span
-                        className={`${
-                          darkSide ? "translate-x-6" : "translate-x-1"
-                        } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                      />
-                    </Switch>
-
-                    <img src={darkIcon} alt="moon indicating dark mode" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Sidebar hide/show toggle */}
-            {isSideBarOpen ? (
-              <div
-                onClick={() => toggleSidebar()}
-                className=" flex  items-center mt-2  absolute bottom-16  text-lg font-bold  rounded-r-full hover:text-[#635FC7] cursor-pointer mr-6 mb-8 px-8 py-4 hover:bg-[#635fc71a] dark:hover:bg-white  space-x-2 justify-center  my-4 text-gray-500 "
+                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                      </svg>
+                      <span class="ml-3">{board.name}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <ul
+                class={`pt-4 mt-4 space-y-2 font-medium   bottom-0 ${
+                  boards?.length &&
+                  "border-t border-gray-200 dark:border-gray-700"
+                }`}
               >
-                <img
-                  className=" min-w-[20px]"
-                  src={hideSidebarIcon}
-                  alt=" side bar show/hide"
-                />
-                {isSideBarOpen && <p> Hide Sidebar </p>}
+                <li>
+                  <a
+                    onClick={logoutUser}
+                    class="flex items-center p-2 cursor-pointer text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                    <span class="flex-1 ml-3 whitespace-nowrap">Logout</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    onClick={() => {
+                      setIsBoardModalOpen(true);
+                    }}
+                    class="cursor-pointer flex items-center p-2 mb-8 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                    </svg>
+                    <span class="ml-3">Create New Board </span>
+                  </a>
+                </li>
+              </ul>
+              <div className=" mx-2  p-4 relative space-x-2 bg-slate-100 dark:bg-[#20212c] flex justify-center items-center rounded-lg bottom-0">
+                <img src={lightIcon} alt="sun indicating light mode" />
+
+                <Switch
+                  checked={darkSide}
+                  onChange={toggleDarkMode}
+                  className={`${
+                    darkSide ? "bg-[#635fc7]" : "bg-gray-200"
+                  } relative inline-flex h-6 w-11 items-center rounded-full`}
+                >
+                  <span
+                    className={`${
+                      darkSide ? "translate-x-6" : "translate-x-1"
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  />
+                </Switch>
+
+                <img src={darkIcon} alt="moon indicating dark mode" />
               </div>
-            ) : (
-              <div className=" absolute p-5  " onClick={() => toggleSidebar()}>
-                <img src={showSidebarIcon} alt="showSidebarIcon" />
-              </div>
-            )}
-          </div>
-        </div>
+            </div>
+          </aside>
+        </>
       )}
 
       {isBoardModalOpen && (
@@ -159,6 +205,7 @@ const mapDispatchToProp = (dispatch) => {
   return {
     setBoardDispatch: () => dispatch(boardActions.setBoardsAction()),
     setBoardActive: (data) => dispatch(boardActions.setBoardActive(data)),
+    logout: (data) => dispatch(loginAction.logout(data)),
   };
 };
 

@@ -107,7 +107,7 @@ function AddEditBoardModal({
       }}
     >
       <div
-        className=" scrollbar-hide overflow-y-scroll max-h-[95vh]  bg-white dark:bg-[#2b2c37] text-black dark:text-white font-bold
+        className=" scrollbar-hide overflow-y-scroll max-h-[95vh]  bg-gray-50 dark:bg-gray-800 text-black dark:text-white font-bold
        shadow-md shadow-[#364e7e1a] max-w-md mx-auto my-auto w-full px-8  py-8 rounded-xl"
       >
         <h3 className=" text-lg ">{type === "edit" ? "Edit" : ""} Board</h3>

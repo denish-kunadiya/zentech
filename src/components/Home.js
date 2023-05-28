@@ -34,6 +34,7 @@ function Home({ boards, boardIndex, setBoardDispatch }) {
                   refresh={refresh}
                 />
               ))}
+
               {/* FOR ADD NEW COLUMNS */}
               {/*  */}
               {/* <div

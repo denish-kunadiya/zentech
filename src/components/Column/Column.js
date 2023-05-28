@@ -67,7 +67,7 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
       onDragOver={handleOnDragOver}
       className="scrollbar-hide   mx-5 pt-[90px] min-w-[280px] "
     >
-      <p className=" font-semibold flex  items-center  gap-2 tracking-widest md:tracking-[.2em] text-[#828fa3] bg-[#F1F2F4] dark:bg-[#101204] p-2 rounded-2xl">
+      <p className=" font-semibold flex  items-center  gap-2 tracking-widest md:tracking-[.2em] text-[#828fa3] bg-gray-200 dark:bg-[#101204] p-2 rounded-2xl">
         <div className={`rounded-full w-4 h-4 ${color} `} />
         {col.name} ({col.tasks.length})
       </p>

@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 
 const Register = ({ loginData, isLoggedIn }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [formValues, setFormValues] = useState({
     name: "",
     email: "",
@@ -32,12 +34,15 @@ const Register = ({ loginData, isLoggedIn }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!formValues.name) {
+      setLoading(false);
       toast.error("Please enter name");
     } else if (!formValues.email) {
+      setLoading(false);
       toast.error("Please enter email");
     } else if (!formValues.password) {
+      setLoading(false);
       toast.error("Please enter password");
     } else {
       createUserWithEmailAndPassword(
@@ -56,10 +61,11 @@ const Register = ({ loginData, isLoggedIn }) => {
             displayName: formValues.name,
           });
           navigate("/home");
+          setLoading(false);
         })
         .catch((error) => {
           // Registration failed, handle the error
-          const errorMessage = error.message;
+          setLoading(false);
           toast.error(error.code);
         });
     }
@@ -77,13 +83,13 @@ const Register = ({ loginData, isLoggedIn }) => {
         <div className="text-white">
           <div className="mb-8 flex flex-col items-center">
             <img
-              src="https://www.logo.wine/a/logo/Instagram/Instagram-Glyph-Color-Logo.wine.svg"
+              src="https://www.logo.wine/a/logo/Trello/Trello-Logo.wine.svg"
               width="150"
               alt=""
               srcset=""
             />
-            <h1 className="mb-2 text-2xl">Instagram</h1>
-            <span className="text-gray-300">Enter Register Details</span>
+            <h1 className="mb-2 text-2xl">Trello Task Board</h1>
+            <span className="text-gray-300">Register</span>
           </div>
           <form method="POST" onSubmit={handleSubmit}>
             <div className="mb-4 text-lg">
@@ -118,13 +124,41 @@ const Register = ({ loginData, isLoggedIn }) => {
             </div>
             <div className="mt-8 flex justify-center text-lg text-black">
               {/* <Link to="/"> */}
-              <button
-                type="submit"
-                className="rounded-3xl bg-yellow-400 bg-opacity-50 px-10 py-2 text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600"
-              >
-                Register
-              </button>
-              {/* </Link> */}
+              <div className="flex items-center justify-center ">
+                <button
+                  type="submit"
+                  className={`w-full rounded-full  px-10 py-2 text-sm  leading-6  text-center bg-yellow-400 bg-opacity-50  text-white shadow-xl backdrop-blur-md transition-colors duration-300 hover:bg-yellow-600 ${
+                    loading && "cursor-not-allowed"
+                  }`}
+                  disabled={loading}
+                >
+                  <div className="inline-flex items-center">
+                    {loading && (
+                      <svg
+                        className="w-5 h-4 mr-3 -ml-1 text-indigo-500 dark:text-white animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                    )}
+                    Register
+                  </div>
+                </button>
+              </div>
             </div>
           </form>
         </div>

@@ -32,9 +32,11 @@ function AddEditTaskModal({
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const columns = board.columns;
-  const col = columns.find((col, index) => index === prevColIndex);
-  const task = col ? col.tasks.find((task, index) => index === taskIndex) : [];
+  const columns = board?.columns;
+  const col = columns?.find((col, index) => index === prevColIndex);
+  const task = col
+    ? col?.tasks?.find((task, index) => index === taskIndex)
+    : [];
   const [status, setStatus] = useState(
     prevColIndex ? columns[prevColIndex]?.name : columns[0]?.name
   );
@@ -61,10 +63,16 @@ function AddEditTaskModal({
   const validate = () => {
     setIsValid(false);
     if (!title.trim()) {
+      toast.error("Please enter title.");
+      return false;
+    }
+    if (!description.trim()) {
+      toast.error("Please enter description.");
       return false;
     }
     for (let i = 0; i < subtasks.length; i++) {
       if (!subtasks[i].title.trim()) {
+        toast.error("Please enter subtask.");
         return false;
       }
     }
@@ -153,7 +161,7 @@ function AddEditTaskModal({
       {/* Modal Section */}
 
       <div
-        className=" scrollbar-hide overflow-y-scroll max-h-[95vh]  my-auto  bg-white dark:bg-[#2b2c37] text-black dark:text-white font-bold
+        className=" scrollbar-hide overflow-y-scroll max-h-[95vh]  my-auto  bg-gray-50 dark:bg-gray-800 text-black dark:text-white font-bold
        shadow-md shadow-[#364e7e1a] max-w-md mx-auto  w-full px-8  py-8 rounded-xl"
       >
         <h3 className=" text-lg ">
