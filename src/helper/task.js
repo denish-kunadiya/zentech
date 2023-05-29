@@ -87,7 +87,8 @@ export const deleteTask = async (id, taskIndex, colIndex) => {
 export const editTask = async (id, taskIndex, colIndex, taskObject) => {
   const db = getFirestore();
   const boardId = id;
-
+  console.log("taskObject", taskObject);
+  console.log("colIndex ::::", colIndex);
   // Get the reference to the 'boards' collection
 
   return new Promise((resolve, reject) => {
@@ -103,10 +104,12 @@ export const editTask = async (id, taskIndex, colIndex, taskObject) => {
             (column) => column.name === taskObject.status
           );
           console.log("columnIndex :::LLLL", columnIndex);
+          console.log("columnIndex :::taskIndex", taskIndex);
 
           if (columnIndex !== -1) {
             // Find the task by its ID within the column
             const task = boardData.columns[colIndex].tasks[taskIndex];
+            console.log("task api", task);
 
             if (task !== -1) {
               // Update the task properties with the updatedTask object
@@ -119,10 +122,15 @@ export const editTask = async (id, taskIndex, colIndex, taskObject) => {
               if (taskObject.status !== boardData.columns[colIndex].name) {
                 // Remove the task from its current status column
                 boardData.columns[colIndex].tasks.splice(taskIndex, 1);
-
+                console.log("task condition", task);
                 // Add the task to the new status column
-                boardData.columns[columnIndex].tasks.push(task);
+                boardData.columns[columnIndex].tasks.push(taskObject);
+                console.log(
+                  "boardData.columns[columnIndex].tasks",
+                  boardData.columns[columnIndex].tasks
+                );
               }
+              console.log("boardData :::", boardData);
 
               // Update the board document with the modified column
               updateDoc(boardsRef, boardData)

@@ -26,6 +26,7 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
   }, [dispatch]);
 
   const handleOnDrop = (e) => {
+    console.log("called");
     const { prevColIndex, taskIndex } = JSON.parse(
       e.dataTransfer.getData("text")
     );
@@ -36,17 +37,11 @@ function Column({ colIndex, boards, col, setRefresh, refresh, boardIndex }) {
         (col, i) => i === prevColIndex
       );
       const task = prevCol.tasks.splice(taskIndex, 1);
-      task[0].status = ab.name;
+      task[0]["status"] = ab.name;
       ab.tasks.push(...task);
+      console.log("task", task);
 
-      // dispatch();
-      const taskObject = {
-        title: task[0].title,
-        description: task[0].description,
-        status: task[0].status,
-        subtasks: task[0].subtasks,
-      };
-      editTask(boards[boardIndex].id, taskIndex, prevColIndex, ...task)
+      editTask(boards[boardIndex].id, taskIndex, prevColIndex, task[0])
         .then((res) => {
           setRefresh(refresh + 1);
           // setIsAddTaskModalOpen(false);
