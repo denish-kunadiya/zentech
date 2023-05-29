@@ -12,7 +12,7 @@ function EmptyBoard({ type, boards, boardIndex, setBoardDispatch }) {
   }, [refresh]);
 
   return (
-    <div className=" bg-white dark:bg-[#2b2c37] h-screen w-screen flex flex-col  items-center justify-center">
+    <div className=" bg-gray-50 dark:bg-gray-800 h-screen w-screen flex flex-col  items-center justify-center">
       <h3 className=" text-gray-500 font-bold">
         {type === "edit"
           ? "This board is empty. Create a new column to get started."

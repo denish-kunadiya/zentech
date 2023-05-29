@@ -4,7 +4,6 @@ import AfterAuth from "../HOC";
 import AddEditBoardModal from "../modals/AddEditBoardModal";
 import Column from "./Column/Column";
 import EmptyBoard from "./Boards/EmptyBoard";
-import Sidebar from "./Sidebar";
 import * as boardActions from "../redux/boards/action";
 function Home({ boards, boardIndex, setBoardDispatch }) {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/Layouts/Sidebar";
+import Header from "../components/Layouts/Header";
 
 const AfterAuth = ({ children }) => {
   const [windowSize, setWindowSize] = useState([

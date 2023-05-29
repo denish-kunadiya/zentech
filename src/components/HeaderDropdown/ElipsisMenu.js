@@ -15,6 +15,7 @@ function ElipsisMenu({
     logout();
     navigate("/");
   };
+  console.log("board", board);
 
   return (
     <div

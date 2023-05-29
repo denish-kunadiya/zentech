@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import iconDown from "../assets/icon-chevron-down.svg";
-import iconUp from "../assets/icon-chevron-up.svg";
-import elipsis from "../assets/icon-vertical-ellipsis.svg";
-import HeaderDropDown from "./HeaderDropdown/HeaderDropDown";
-import ElipsisMenu from "./HeaderDropdown/ElipsisMenu";
-import AddEditTaskModal from "../modals/AddEditTaskModal";
-import AddEditBoardModal from "../modals/AddEditBoardModal";
+import iconDown from "../../assets/icon-chevron-down.svg";
+import iconUp from "../../assets/icon-chevron-up.svg";
+import elipsis from "../../assets/icon-vertical-ellipsis.svg";
+import HeaderDropDown from "../HeaderDropdown/HeaderDropDown";
+import ElipsisMenu from "../HeaderDropdown/ElipsisMenu";
+import AddEditTaskModal from "../../modals/AddEditTaskModal";
+import AddEditBoardModal from "../../modals/AddEditBoardModal";
 import { connect, useDispatch, useSelector } from "react-redux";
-import DeleteModal from "../modals/DeleteModal";
+import DeleteModal from "../../modals/DeleteModal";
 // import boardsSlice from "../redux/boardsSlice";
-import { auth } from "../firebase";
-import { deleteBoard } from "../helper/board";
-import * as boardActions from "../redux/boards/action";
+import { auth } from "../../firebase";
+import { deleteBoard } from "../../helper/board";
+import * as boardActions from "../../redux/boards/action";
 import { toast } from "react-toastify";
 
 function Header({

@@ -111,6 +111,7 @@ function TaskModal({
               setOpenEditModal={setOpenEditModal}
               setOpenDeleteModal={setOpenDeleteModal}
               type="Task"
+              board={boards}
             />
           )}
         </div>

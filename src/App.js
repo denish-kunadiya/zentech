@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Home from "./components/Home";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Error from "./components/Error";
 import ProtectedLayouts from "./routes/ProtectedLayouts";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
+import Error from "./components/Error/Error";
 
 function App() {
   const [isBoardModalOpen, setIsBoardModalOpen] = useState(false);

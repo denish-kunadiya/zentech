@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { Switch } from "@headlessui/react";
-import boardIcon from "../assets/icon-board.svg";
-import useDarkMode from "../hooks/useDarkMode";
-import darkIcon from "../assets/icon-dark-theme.svg";
-import lightIcon from "../assets/icon-light-theme.svg";
+import useDarkMode from "../../hooks/useDarkMode";
+import darkIcon from "../../assets/icon-dark-theme.svg";
+import lightIcon from "../../assets/icon-light-theme.svg";
 
-import * as loginAction from "../redux/auth/action";
+import * as loginAction from "../../redux/auth/action";
 
 // import boardsSlice from "../redux/boardsSlice";
-import AddEditBoardModal from "../modals/AddEditBoardModal";
-import { getBoards } from "../helper/board";
+import AddEditBoardModal from "../../modals/AddEditBoardModal";
 
-import * as boardActions from "../redux/boards/action";
-import Loader from "./Loader.js";
+import * as boardActions from "../../redux/boards/action";
 import { useNavigate } from "react-router-dom";
+import Loader from "../Loader";
 
 function Sidebar({
   isSideBarOpen,
@@ -86,7 +84,7 @@ function Sidebar({
 
           <aside
             id="separator-sidebar"
-            class="fixed top-[70px] left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0 "
+            class="fixed top-[60px] left-0 z-40 w-64 h-full transition-transform -translate-x-full sm:translate-x-0 "
             aria-label="Sidebar"
           >
             <div class=" px-3 py-4  overflow-y-auto bg-gray-50 dark:bg-gray-800 h-[100vh]">
